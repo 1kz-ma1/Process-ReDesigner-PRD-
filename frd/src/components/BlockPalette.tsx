@@ -10,7 +10,20 @@ export function BlockPalette() {
       <p className="muted">クリックで追加</p>
       <div className="grid-2">
         {blockCatalog.map((b) => (
-          <button key={b.type} className="secondary" onClick={() => addBlock(b.type)}>
+          <button
+            key={b.type}
+            className="secondary"
+            onClick={() => addBlock(b.type)}
+            draggable={true}
+            onDragStart={(e) => {
+              try {
+                e.dataTransfer?.setData("application/reactflow", b.type);
+                e.dataTransfer!.effectAllowed = "copy";
+              } catch {
+                // ignore
+              }
+            }}
+          >
             {b.label}
           </button>
         ))}

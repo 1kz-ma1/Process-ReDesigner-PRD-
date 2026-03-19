@@ -41,7 +41,7 @@ interface FlowState {
   initialized: boolean;
   load: () => Promise<void>;
   persist: () => Promise<void>;
-  addBlock: (type: BlockType) => void;
+  addBlock: (type: BlockType, x?: number, y?: number) => void;
   deleteBlock: (blockId: string) => void;
   selectBlock: (blockId: string | null) => void;
   updateSelectedMeta: (metaText: string) => string | null;
@@ -81,7 +81,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
     await saveRoot(root);
   },
 
-  addBlock: (type) => {
+  addBlock: (type, x?, y?) => {
     const { flow } = get();
     if (!flow) return;
     const id = crypto.randomUUID();
@@ -104,9 +104,9 @@ export const useFlowStore = create<FlowState>((set, get) => ({
             const tx = Number(m[1]);
             const ty = Number(m[2]);
             const scale = Number(m[3]);
-            const x = Math.round((clientCenterX - rect.left - tx) / scale);
-            const y = Math.round((clientCenterY - rect.top - ty) / scale);
-            return { x, y };
+            const cx = Math.round((clientCenterX - rect.left - tx) / scale);
+            const cy = Math.round((clientCenterY - rect.top - ty) / scale);
+            return { x: cx, y: cy };
           }
         }
 
@@ -116,7 +116,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       }
     };
 
-    const center = computeCenter();
+    const center = x != null && y != null ? { x, y } : computeCenter();
 
     const next: Block = {
       id,
