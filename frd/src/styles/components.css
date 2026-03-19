@@ -3,7 +3,7 @@
 .btn.primary{background:var(--ui-primary);border-color:var(--ui-primary);color:var(--ui-surface)}
 .btn.primary:hover{background:var(--ui-primary-hover)}
 .input,.select,.textarea{width:100%;background:var(--ui-surface);color:var(--ui-text);border:1px solid var(--ui-border);border-radius:var(--radius-sm);padding:8px 10px}
-.input:focus,.select:focus,.textarea:focus{outline:2px solid rgba(0,145,213,.2);border-color:var(--ui-primary)}
+.input:focus,.select:focus,.textarea:focus{outline:2px solid rgba(var(--ui-primary-rgb),.2);border-color:var(--ui-primary)}
 .card{background:var(--ui-surface);border:1px solid var(--ui-border);border-radius:var(--radius-sm);box-shadow:var(--shadow-xxs);padding:var(--space-4)}
 .badge{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid var(--ui-border)}
 .badge.input{background:var(--ui-badge-input)}.badge.approve{background:var(--ui-badge-approve)}.badge.validate{background:var(--ui-badge-validate)}
