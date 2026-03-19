@@ -1,0 +1,23 @@
+FRD JSON Path,Kintone App,Field Code,Field Type,Description
+flow.id,FlowsApp,flow_id,Single line text,Flow の UUID
+flow.name,FlowsApp,Title,Single line text,Flow 名（表示用）
+flow.description,FlowsApp,description,Multi line text,説明
+flow.version,FlowsApp,version,Number,バージョン
+flow.targetSLAmin,FlowsApp,targetSLAmin,Number,目標SLA
+
+blocks[].id,BlocksApp,block_id,Single line text,Block の UUID
+blocks[].type,BlocksApp,type,Single line text,Block 種別（Input/Approve 等）
+blocks[].name,BlocksApp,name,Single line text,ブロック表示名（日本語ラベル含む）
+blocks[].x,BlocksApp,x,Number,キャンバスX座標
+blocks[].y,BlocksApp,y,Number,キャンバスY座標
+blocks[].meta,BlocksApp,meta,JSON,メタデータ（JSON文字列）
+
+edges[].id,EdgesApp,edge_id,Single line text,エッジの UUID
+edges[].from,EdgesApp,from,Single line text,from block_id
+edges[].to,EdgesApp,to,Single line text,to block_id
+edges[].label,EdgesApp,label,Single line text,エッジラベル
+
+iterations[].id,IterationsApp,iteration_id,Single line text,Iteration UUID
+iterations[].createdAt,IterationsApp,createdAt,Date,作成日時
+iterations[].note,IterationsApp,note,Multi line text,注釈
+iterations[].snapshot.flow.id,IterationsApp,snapshot_flow_id,Single line text,スナップショットの flow.id
