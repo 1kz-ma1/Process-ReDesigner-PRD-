@@ -1,11 +1,11 @@
 :root {
-  --bg: #f6f4ef;
-  --panel: #fffdf8;
-  --line: #ddd8cb;
-  --ink: #1f2937;
-  --muted: #5b6470;
-  --accent: #0f766e;
-  --danger: #b91c1c;
+  --bg: var(--ui-bg);
+  --panel: var(--ui-surface);
+  --line: var(--ui-border);
+  --ink: var(--ui-text);
+  --muted: var(--ui-muted);
+  --accent: var(--ui-primary);
+  --danger: var(--ui-critical);
   --radius: 12px;
   --space-sm: 8px;
   --space-md: 12px;
