@@ -1,0 +1,52 @@
+:root {
+  --ui-bg: #F7FAFC;
+  --ui-surface: #FFFFFF;
+  --ui-border: #D6DEE6;
+  --ui-heading: #24364A;
+  --ui-text: #2D3A48;
+  --ui-muted: #63758A;
+  --ui-primary: #0091D5;
+  --ui-primary-hover: #007DB6;
+  --ui-info: #3BA6DE;
+  --ui-warn: #E6A100;
+  --ui-critical: #D93A3A;
+
+  --radius-sm: 4px;
+  --radius-lg: 8px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --shadow-xxs: 0 1px 2px rgba(20,30,55,.06);
+  --shadow-xs: 0 2px 6px rgba(20,30,55,.08);
+  --ui-radial-1: #fff0cc;
+  --ui-radial-2: #d9f3ef;
+  --ui-accent-soft: #d8f0eb;
+  --ui-secondary-border: #b6ded6;
+  --ui-surface-variant: #FAFCFF;
+  --ui-badge-input: #E7F5FF;
+  --ui-badge-approve: #FFF4E6;
+  --ui-badge-validate: #EAF7EC;
+  --ui-badge-transform: #F3E8FF;
+  --ui-badge-notify: #E6F7F3;
+  --ui-badge-store: #F5F8FA;
+  --ui-badge-review: #FFF0F3;
+  --ui-badge-decision: #EEF2FF;
+  --ui-badge-complete: #EEFBF1;
+  --ui-node-handle: #B6C3D1;
+  --ui-edge-stroke: #9CB4C9;
+  --ui-code-bg: #FBFDFE;
+  --ui-panel-title-bg: #F3F7FB;
+  --ui-node-header-border: #EEF2F6;
+  --ui-radial-dot: #E9EEF3;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height:100%; background:var(--ui-bg); color:var(--ui-text); margin:0; }
+h1,h2,h3,h4 { color: var(--ui-heading); margin: 0 0 var(--space-3); }
+button, input, select, textarea { font: inherit; }
