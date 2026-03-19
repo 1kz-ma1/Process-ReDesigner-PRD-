@@ -1,0 +1,29 @@
+:root {
+  /* Core tokens (theme-safe) */
+  --ui-bg: #f2f0ea;
+  --ui-surface: #fffdf7;
+  --ui-surface-plain: #ffffff;
+  --ui-text: #1f2a37;
+  --ui-text-subtle: #5b6470;
+  --ui-border: #dad4c8;
+  --ui-accent: #1f8a70;
+  --ui-accent-soft: #d4efe7;
+  --ui-warn: #f59e0b;
+  --ui-critical: #d94841;
+
+  /* decorative / gradients */
+  --ui-radial-1: #fff3d6;
+  --ui-radial-2: #d4efe7;
+
+  /* secondary borders / chip */
+  --ui-border-2: #b5d6cd;
+
+  /* error banner */
+  --ui-error-bg: #fee4e2;
+  --ui-error-text: #9f1d1d;
+  --ui-error-border: #fbb4ae;
+
+  /* RGB tokens for rgba() usage */
+  --ui-ink-rgb: 31, 42, 55;
+  --ui-accent-rgb: 31, 138, 112;
+}
