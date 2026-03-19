@@ -1,0 +1,21 @@
+file,line,snippet,category
+rdf/frontend/src/styles.css,2,"--bg: #f2f0ea;",hex-variable
+rdf/frontend/src/styles.css,3,"--surface: #fffdf7;",hex-variable
+rdf/frontend/src/styles.css,4,"--ink: #1f2a37;",hex-variable
+rdf/frontend/src/styles.css,5,"--ink-subtle: #5b6470;",hex-variable
+rdf/frontend/src/styles.css,6,"--line: #dad4c8;",hex-variable
+rdf/frontend/src/styles.css,7,"--accent: #1f8a70;",hex-variable
+rdf/frontend/src/styles.css,8,"--accent-soft: #d4efe7;",hex-variable
+rdf/frontend/src/styles.css,9,"--warn: #f59e0b;",hex-variable
+rdf/frontend/src/styles.css,10,"--critical: #d94841;",hex-variable
+rdf/frontend/src/styles.css,25,"radial-gradient(..., #fff3d6 0, ...)",radial-gradient
+rdf/frontend/src/styles.css,26,"radial-gradient(..., #d4efe7 0, ...)",radial-gradient
+rdf/frontend/src/styles.css,100,"color: #fff;",hex-literal
+rdf/frontend/src/styles.css,139,"border: 1px solid #b5d6cd;",hex-literal
+rdf/frontend/src/styles.css,153,"background: #fff;",hex-literal
+rdf/frontend/src/styles.css,227,"background: #fff;",hex-literal
+rdf/frontend/src/styles.css,251,"background: #fee4e2;",hex-literal
+rdf/frontend/src/styles.css,252,"color: #9f1d1d;",hex-literal
+rdf/frontend/src/styles.css,253,"border: 1px solid #fbb4ae;",hex-literal
+rdf/frontend/src/styles.css,63,"box-shadow: 0 6px 18px rgba(31, 42, 55, 0.06);",rgba
+rdf/frontend/src/styles.css,164,"box-shadow: 0 6px 18px rgba(31, 138, 112, 0.08);",rgba
