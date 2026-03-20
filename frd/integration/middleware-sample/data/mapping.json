@@ -1,0 +1,9 @@
+{
+  "oauthTokens": {
+    "alice": {
+      "accessToken": "dummy-token-123",
+      "refreshToken": "r-token",
+      "expiresAt": null
+    }
+  }
+}
