@@ -209,6 +209,13 @@ button,
   z-index: 0;
 }
 
+/* Improve touch responsiveness: tell the browser not to wait for touch handlers */
+.canvas-box .react-flow__viewport,
+.canvas-box .react-flow__renderer {
+  touch-action: none;
+  -ms-touch-action: none;
+}
+
 /* DEBUG HELPERS (disabled by default). To enable, add the `debug` class to `.canvas-box` */
 .canvas-box.debug .react-flow__node,
 .canvas-box.debug .rf-node {
