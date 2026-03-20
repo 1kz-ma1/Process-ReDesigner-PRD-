@@ -1,0 +1,37 @@
+name: Deploy FRD to GitHub Pages
+
+on:
+  push:
+    branches:
+      - feat/tokenize-styles-20260319
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install & build FRD
+        working-directory: frd
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frd/dist
+          publish_branch: gh-pages
+          user_name: github-actions
+          user_email: github-actions@github.com
