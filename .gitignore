@@ -1,0 +1,5 @@
+# Ignore node modules for FRD frontend
+frd/node_modules/
+
+# Ignore local gh-pages temp deploy cache
+frd/node_modules/.cache/gh-pages/
