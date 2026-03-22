@@ -1,10 +1,9 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-export function Toolbar({ flowName, onSaveIteration, onLoadIterations, onExport, onImport, iterations }) {
-    return (_jsxs("section", { className: "panel toolbar-panel", children: [_jsxs("div", { className: "toolbar-left", children: [_jsx("h1", { children: "\u30D7\u30ED\u30BB\u30B9\u30EA\u30C7\u30B6\u30A4\u30CA\u30FC (PRD)" }), _jsxs("p", { className: "muted", children: ["\u30D5\u30ED\u30FC: ", flowName ?? "読み込み中..."] })] }), _jsxs("div", { className: "toolbar-actions", children: [_jsx("button", { onClick: onSaveIteration, children: "Iteration\u4FDD\u5B58" }), _jsx("button", { onClick: onLoadIterations, children: "\u5C65\u6B74\u8AAD\u307F\u8FBC\u307F" }), _jsxs("label", { className: "file-button", children: ["JSON\u5165\u529B", _jsx("input", { type: "file", accept: "application/json", onChange: (e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                        onImport(file);
-                                    }
-                                    e.currentTarget.value = "";
-                                } })] }), _jsx("button", { onClick: onExport, children: "JSON\u51FA\u529B" })] }), _jsx("div", { className: "toolbar-iterations", children: _jsxs("span", { children: ["\u30A4\u30C6\u30EC\u30FC\u30B7\u30E7\u30F3\u6570: ", iterations.length] }) })] }));
+/**
+ * Toolbar
+ * ツールバー：モード切替、Undo/Redo、Validate、Auto Layout、Zoom etc
+ */
+import { getLabel } from "../utils/i18n";
+export default function Toolbar({ mode, onSetMode, onValidate, onUndo, onRedo, canUndo, canRedo, onAutoLayout, onToggleProperties, }) {
+    return (_jsxs("header", { className: "toolbar", children: [_jsx("div", { className: "toolbar-group", children: _jsx("h1", { children: "\uD83D\uDD04 RDF \u30D7\u30ED\u30BB\u30B9\u30EA\u30C7\u30B6\u30A4\u30CA\u30FC" }) }), _jsxs("div", { className: "toolbar-group mode-selector", children: [_jsxs("label", { children: [getLabel("mode_roadmap"), ":", _jsx("input", { type: "radio", name: "mode", value: "roadmap", checked: mode === "roadmap", onChange: () => onSetMode("roadmap") })] }), _jsxs("label", { children: [getLabel("mode_free"), ":", _jsx("input", { type: "radio", name: "mode", value: "free", checked: mode === "free", onChange: () => onSetMode("free") })] })] }), _jsxs("div", { className: "toolbar-group", children: [_jsx("button", { onClick: onValidate, title: getLabel("validate"), children: getLabel("validate") }), _jsxs("button", { onClick: onAutoLayout, title: "\u81EA\u52D5\u6574\u5217", children: ["\uD83D\uDCD0 ", getLabel("auto_layout")] })] }), _jsxs("div", { className: "toolbar-group", children: [_jsxs("button", { onClick: onUndo, disabled: !canUndo, title: getLabel("undo"), children: ["\u21B6 ", getLabel("undo")] }), _jsxs("button", { onClick: onRedo, disabled: !canRedo, title: getLabel("redo"), children: ["\u21B7 ", getLabel("redo")] })] }), _jsx("div", { className: "toolbar-group", children: _jsxs("button", { onClick: onToggleProperties, title: getLabel("toggle_properties"), children: ["\u2699\uFE0F ", getLabel("toggle_properties")] }) })] }));
 }

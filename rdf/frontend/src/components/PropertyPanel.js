@@ -1,34 +1,37 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+/**
+ * PropertyPanel
+ * 右側パネル：選択ノードの名前・meta 編集
+ */
 import { useEffect, useState } from "react";
-export function PropertyPanel({ block, onUpdate }) {
+import { getLabel } from "../utils/i18n";
+export default function PropertyPanel({ node, onUpdateNode }) {
     const [name, setName] = useState("");
-    const [x, setX] = useState(0);
-    const [y, setY] = useState(0);
-    const [meta, setMeta] = useState("{}");
+    const [metaText, setMetaText] = useState("{}");
+    const [metaError, setMetaError] = useState(null);
     useEffect(() => {
-        if (!block) {
+        if (!node) {
             setName("");
-            setX(0);
-            setY(0);
-            setMeta("{}");
+            setMetaText("{}");
+            setMetaError(null);
             return;
         }
-        setName(block.name);
-        setX(block.x);
-        setY(block.y);
-        setMeta(JSON.stringify(block.meta, null, 2));
-    }, [block]);
-    const disabled = !block;
-    const onSave = () => {
-        if (!block)
+        setName(node.name);
+        setMetaText(JSON.stringify(node.meta, null, 2));
+        setMetaError(null);
+    }, [node]);
+    const handleSave = () => {
+        if (!node)
             return;
         try {
-            const parsed = JSON.parse(meta);
-            onUpdate(block.id, { name, x, y, meta: parsed });
+            const parsed = JSON.parse(metaText);
+            setMetaError(null);
+            onUpdateNode({ name, meta: parsed });
         }
-        catch {
-            alert("meta JSON が不正です");
+        catch (err) {
+            setMetaError(`JSON 構文エラー: ${err instanceof Error ? err.message : "不明"}`);
         }
     };
-    return (_jsxs("section", { className: "panel property-panel", children: [_jsx("h2", { children: "\u30D7\u30ED\u30D1\u30C6\u30A3" }), !block && _jsx("p", { className: "muted", children: "\u30D6\u30ED\u30C3\u30AF\u3092\u9078\u629E\u3059\u308B\u3068\u7DE8\u96C6\u3067\u304D\u307E\u3059" }), _jsxs("div", { className: "form-grid", children: [_jsx("label", { children: "\u540D\u524D" }), _jsx("input", { value: name, disabled: disabled, onChange: (e) => setName(e.target.value) }), _jsx("label", { children: "X\u5EA7\u6A19" }), _jsx("input", { type: "number", value: x, disabled: disabled, onChange: (e) => setX(Number(e.target.value)) }), _jsx("label", { children: "Y\u5EA7\u6A19" }), _jsx("input", { type: "number", value: y, disabled: disabled, onChange: (e) => setY(Number(e.target.value)) }), _jsx("label", { children: "meta (JSON)" }), _jsx("textarea", { value: meta, disabled: disabled, onChange: (e) => setMeta(e.target.value), rows: 12 })] }), _jsx("button", { disabled: disabled, onClick: onSave, children: "\u4FDD\u5B58" })] }));
+    const disabled = !node;
+    return (_jsxs("aside", { className: "property-panel", children: [_jsx("h2", { children: getLabel("properties") }), !node && _jsxs("p", { className: "muted", children: [getLabel("block_name"), "\u3092\u9078\u629E\u3059\u308B\u3068\u7DE8\u96C6\u3067\u304D\u307E\u3059"] }), node && (_jsxs("div", { className: "form-group", children: [_jsx("label", { children: getLabel("block_name") }), _jsx("input", { type: "text", value: name, disabled: disabled, onChange: (e) => setName(e.target.value), placeholder: "\u30D6\u30ED\u30C3\u30AF\u540D" }), _jsx("label", { children: getLabel("meta_json") }), _jsx("textarea", { value: metaText, disabled: disabled, onChange: (e) => setMetaText(e.target.value), rows: 12, placeholder: "{}", className: metaError ? "error" : "" }), metaError && _jsx("p", { className: "error-text", children: metaError }), _jsx("button", { disabled: disabled || !!metaError, onClick: handleSave, children: getLabel("save") })] }))] }));
 }

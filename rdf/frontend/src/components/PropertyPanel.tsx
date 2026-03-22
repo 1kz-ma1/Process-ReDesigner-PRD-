@@ -1,61 +1,81 @@
+/**
+ * PropertyPanel
+ * 右側パネル：選択ノードの名前・meta 編集
+ */
+
 import { useEffect, useState } from "react";
-import type { Block } from "../models/types";
+import type { NodeData } from "../models/types";
+import { getLabel } from "../utils/i18n";
 
 interface PropertyPanelProps {
-  block: Block | null;
-  onUpdate: (id: string, patch: Partial<Block>) => void;
+  node: NodeData | null;
+  onUpdateNode: (patch: Partial<NodeData>) => void;
 }
 
-export function PropertyPanel({ block, onUpdate }: PropertyPanelProps) {
+export default function PropertyPanel({ node, onUpdateNode }: PropertyPanelProps) {
   const [name, setName] = useState("");
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
-  const [meta, setMeta] = useState("{}");
+  const [metaText, setMetaText] = useState("{}");
+  const [metaError, setMetaError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!block) {
+    if (!node) {
       setName("");
-      setX(0);
-      setY(0);
-      setMeta("{}");
+      setMetaText("{}");
+      setMetaError(null);
       return;
     }
-    setName(block.name);
-    setX(block.x);
-    setY(block.y);
-    setMeta(JSON.stringify(block.meta, null, 2));
-  }, [block]);
+    setName(node.name);
+    setMetaText(JSON.stringify(node.meta, null, 2));
+    setMetaError(null);
+  }, [node]);
 
-  const disabled = !block;
+  const handleSave = () => {
+    if (!node) return;
 
-  const onSave = () => {
-    if (!block) return;
     try {
-      const parsed = JSON.parse(meta) as Record<string, unknown>;
-      onUpdate(block.id, { name, x, y, meta: parsed });
-    } catch {
-      alert("meta JSON が不正です");
+      const parsed = JSON.parse(metaText) as Record<string, unknown>;
+      setMetaError(null);
+      onUpdateNode({ name, meta: parsed });
+    } catch (err) {
+      setMetaError(`JSON 構文エラー: ${err instanceof Error ? err.message : "不明"}`);
     }
   };
 
+  const disabled = !node;
+
   return (
-    <section className="panel property-panel">
-      <h2>プロパティ</h2>
-      {!block && <p className="muted">ブロックを選択すると編集できます</p>}
-      <div className="form-grid">
-        <label>名前</label>
-        <input value={name} disabled={disabled} onChange={(e) => setName(e.target.value)} />
+    <aside className="property-panel">
+      <h2>{getLabel("properties")}</h2>
 
-        <label>X座標</label>
-        <input type="number" value={x} disabled={disabled} onChange={(e) => setX(Number(e.target.value))} />
+      {!node && <p className="muted">{getLabel("block_name")}を選択すると編集できます</p>}
 
-        <label>Y座標</label>
-        <input type="number" value={y} disabled={disabled} onChange={(e) => setY(Number(e.target.value))} />
+      {node && (
+        <div className="form-group">
+          <label>{getLabel("block_name")}</label>
+          <input
+            type="text"
+            value={name}
+            disabled={disabled}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="ブロック名"
+          />
 
-        <label>meta (JSON)</label>
-        <textarea value={meta} disabled={disabled} onChange={(e) => setMeta(e.target.value)} rows={12} />
-      </div>
-      <button disabled={disabled} onClick={onSave}>保存</button>
-    </section>
+          <label>{getLabel("meta_json")}</label>
+          <textarea
+            value={metaText}
+            disabled={disabled}
+            onChange={(e) => setMetaText(e.target.value)}
+            rows={12}
+            placeholder="{}"
+            className={metaError ? "error" : ""}
+          />
+          {metaError && <p className="error-text">{metaError}</p>}
+
+          <button disabled={disabled || !!metaError} onClick={handleSave}>
+            {getLabel("save")}
+          </button>
+        </div>
+      )}
+    </aside>
   );
 }

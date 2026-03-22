@@ -1,0 +1,101 @@
+/**
+ * toolbar.css
+ * Toolbar のスタイル
+ */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+  padding: var(--gap-md);
+  background-color: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding-right: var(--gap-md);
+  border-right: 1px solid var(--color-border);
+}
+
+.toolbar-group:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+/* モード切替（ラジオボタン） */
+.mode-selector {
+  display: flex;
+  gap: var(--gap-sm);
+  align-items: center;
+}
+
+.mode-selector label {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+}
+
+.mode-selector input[type="radio"] {
+  cursor: pointer;
+}
+
+/* ツールバーボタン */
+.toolbar button {
+  padding: var(--gap-sm) var(--gap-md);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.toolbar button:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.toolbar button:active {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.toolbar button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toolbar button.danger {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.toolbar button.danger:hover {
+  background-color: var(--color-danger-light);
+}
+
+.toolbar button.danger:active {
+  background-color: var(--color-danger);
+  color: white;
+}
+
+/* ツールバータイトル */
+.toolbar-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  flex-grow: 1;
+}

@@ -1,43 +1,85 @@
-import type { Iteration } from "../models/types";
+/**
+ * Toolbar
+ * ツールバー：モード切替、Undo/Redo、Validate、Auto Layout、Zoom etc
+ */
+
+import { getLabel } from "../utils/i18n";
 
 interface ToolbarProps {
-  flowName?: string;
-  onSaveIteration: () => void;
-  onLoadIterations: () => void;
-  onExport: () => void;
-  onImport: (file: File) => void;
-  iterations: Iteration[];
+  mode: "roadmap" | "free";
+  onSetMode: (mode: "roadmap" | "free") => void;
+  onValidate: () => void;
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  onAutoLayout: () => void;
+  onToggleProperties: () => void;
 }
 
-export function Toolbar({ flowName, onSaveIteration, onLoadIterations, onExport, onImport, iterations }: ToolbarProps) {
+export default function Toolbar({
+  mode,
+  onSetMode,
+  onValidate,
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
+  onAutoLayout,
+  onToggleProperties,
+}: ToolbarProps) {
   return (
-    <section className="panel toolbar-panel">
-      <div className="toolbar-left">
-        <h1>プロセスリデザイナー (PRD)</h1>
-        <p className="muted">フロー: {flowName ?? "読み込み中..."}</p>
+    <header className="toolbar">
+      <div className="toolbar-group">
+        <h1>🔄 RDF プロセスリデザイナー</h1>
       </div>
-      <div className="toolbar-actions">
-        <button onClick={onSaveIteration}>Iteration保存</button>
-        <button onClick={onLoadIterations}>履歴読み込み</button>
-        <label className="file-button">
-          JSON入力
+
+      <div className="toolbar-group mode-selector">
+        <label>
+          {getLabel("mode_roadmap")}:
           <input
-            type="file"
-            accept="application/json"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                onImport(file);
-              }
-              e.currentTarget.value = "";
-            }}
+            type="radio"
+            name="mode"
+            value="roadmap"
+            checked={mode === "roadmap"}
+            onChange={() => onSetMode("roadmap")}
           />
         </label>
-        <button onClick={onExport}>JSON出力</button>
+        <label>
+          {getLabel("mode_free")}:
+          <input
+            type="radio"
+            name="mode"
+            value="free"
+            checked={mode === "free"}
+            onChange={() => onSetMode("free")}
+          />
+        </label>
       </div>
-      <div className="toolbar-iterations">
-        <span>イテレーション数: {iterations.length}</span>
+
+      <div className="toolbar-group">
+        <button onClick={onValidate} title={getLabel("validate")}>
+          {getLabel("validate")}
+        </button>
+        <button onClick={onAutoLayout} title="自動整列">
+          📐 {getLabel("auto_layout")}
+        </button>
       </div>
-    </section>
+
+      <div className="toolbar-group">
+        <button onClick={onUndo} disabled={!canUndo} title={getLabel("undo")}>
+          ↶ {getLabel("undo")}
+        </button>
+        <button onClick={onRedo} disabled={!canRedo} title={getLabel("redo")}>
+          ↷ {getLabel("redo")}
+        </button>
+      </div>
+
+      <div className="toolbar-group">
+        <button onClick={onToggleProperties} title={getLabel("toggle_properties")}>
+          ⚙️ {getLabel("toggle_properties")}
+        </button>
+      </div>
+    </header>
   );
 }

@@ -1,3 +1,10 @@
+# ローカル
+cd frd
+npm install
+npm run build
+npm run deploy
+
+# CIトリガー
 cd frd
 npm install
 git add package-lock.json
