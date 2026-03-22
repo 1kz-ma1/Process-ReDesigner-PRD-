@@ -5,6 +5,10 @@
 
 import { useMemo, useState } from "react";
 import { useFlowStore } from "../hooks/useFlowStore";
+import { BlockPalette } from "./BlockPalette";
+import type { BlockType } from "../models/types";
+import { getDefaultMetaByType } from "../utils/analysisRules";
+import { TYPE_LABELS } from "../utils/typeLabels";
 import { validateFlow } from "../utils/validator";
 import { autoLayout } from "../utils/layout";
 import { injectDesignTokens } from "../utils/designTokens";
@@ -59,6 +63,42 @@ export default function AppShell() {
 
       {/* メインレイアウト */}
       <div className="app-main">
+        {/* 左パレット */}
+        <aside className="left-panel">
+          {/* blockTypes list mirrors editor defaults */}
+          <BlockPalette
+            blockTypes={[
+              "Input",
+              "Validate",
+              "Approve",
+              "Handoff",
+              "Transform",
+              "Notify",
+              "Store",
+              "Review",
+              "Decision",
+              "Complete",
+            ] as BlockType[]}
+            onAdd={(type) => {
+              try {
+                const vp = store.current.viewport;
+                const container = document.querySelector('.canvas-root') as HTMLElement | null;
+                const rect = container ? container.getBoundingClientRect() : null;
+                const centerX = rect ? rect.width / 2 : window.innerWidth / 2;
+                const centerY = rect ? rect.height / 2 : window.innerHeight / 2;
+                const worldX = -vp.x + centerX / vp.zoom;
+                const worldY = -vp.y + centerY / vp.zoom;
+                const label = TYPE_LABELS[type] ?? type;
+                const meta = getDefaultMetaByType(type as any) ?? {};
+                store.addNode('task', String(label), worldX, worldY, meta);
+              } catch (err) {
+                // fallback: add at origin
+                store.addNode('task', String(type), 0, 0, {});
+              }
+            }}
+          />
+        </aside>
+
         {/* キャンバス */}
         <CanvasRoot
           doc={store.current}

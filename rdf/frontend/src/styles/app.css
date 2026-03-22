@@ -23,6 +23,21 @@
   overflow: hidden;
 }
 
+/* 左パレット */
+.left-panel {
+  width: 260px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  padding: var(--gap-sm);
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.left-panel .panel {
+  margin: 0;
+}
+
 .canvas-root {
   flex: 1;
   border-radius: var(--radius-md);
