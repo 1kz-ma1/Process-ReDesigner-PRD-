@@ -5,8 +5,26 @@ npm run build
 npm run deploy
 
 # CIトリガー
-cd frd
-npm install
-git add package-lock.json
-git commit -m "chore(frd): sync package-lock with package.json"
+# 1 必ずリポジトリ直下へ移動
+cd "C:\projects\Process ReDesigner"
+
+# 2 いまどこにいるか確認（念のため）
+git rev-parse --show-toplevel
+
+# 3 変更確認
+git status --short
+
+# 4 必要ファイルだけを明示的にステージ（git add . は使わない）
+git add deploy.txt
+git add rdf/frontend/package.json rdf/frontend/package-lock.json
+git add rdf/frontend/src
+git add rdf/frontend/tsconfig.json rdf/frontend/tsconfig.tsbuildinfo
+
+# 5 ステージ内容を最終確認（ここが超重要）
+git diff --cached --name-only
+
+# 6 コミット
+git commit -m "feat(rdf): update frontend safely"
+
+# 7 プッシュ
 git push origin HEAD
