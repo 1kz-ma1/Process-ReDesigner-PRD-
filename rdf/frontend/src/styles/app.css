@@ -559,6 +559,7 @@
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
   overflow: hidden;
+  position: relative;
 }
 
 .template-mini-map svg {
@@ -616,6 +617,20 @@
 
 .template-mini-map .map-node.start.end {
   stroke: #7c3aed;
+}
+
+.template-mini-tooltip {
+  position: absolute;
+  transform: translate(0, -100%);
+  background: rgba(15, 23, 42, 0.92);
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .template-preview {

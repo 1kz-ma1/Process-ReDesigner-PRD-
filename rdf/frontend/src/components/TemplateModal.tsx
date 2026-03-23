@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import type { TemplateDoc } from "../templates";
 
 interface TemplateModalProps {
@@ -107,12 +107,94 @@ function buildMiniNodeRoles(template: TemplateDoc): Map<string, Set<NodeRole>> {
 function TemplateMiniMap({ template }: { template: TemplateDoc }) {
   const width = 280;
   const height = 92;
-  const pointMap = buildMiniPointMap(template, width, height);
-  const roleMap = buildMiniNodeRoles(template);
+  const pointMap = useMemo(() => buildMiniPointMap(template, width, height), [template, width, height]);
+  const roleMap = useMemo(() => buildMiniNodeRoles(template), [template]);
+  const miniNodes = useMemo(
+    () =>
+      template.nodes
+        .map((node) => {
+          const p = pointMap.get(node.id);
+          if (!p) return null;
+          return { node, p };
+        })
+        .filter((item): item is { node: TemplateDoc["nodes"][number]; p: MiniPoint } => item !== null),
+    [pointMap, template.nodes]
+  );
+
+  const [hoveredNodeName, setHoveredNodeName] = useState<string | null>(null);
+  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
+  const hoverTimerRef = useRef<number | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  const clearHoverTimer = () => {
+    if (hoverTimerRef.current !== null) {
+      window.clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => clearHoverTimer();
+  }, []);
+
+  const handleMapMouseMove = (event: MouseEvent<SVGSVGElement>) => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+
+    const localX = event.clientX - rect.left;
+    const localY = event.clientY - rect.top;
+    const viewX = (localX / rect.width) * width;
+    const viewY = (localY / rect.height) * height;
+
+    let nearest: { name: string; dist2: number } | null = null;
+    for (const item of miniNodes) {
+      const dx = item.p.x - viewX;
+      const dy = item.p.y - viewY;
+      const dist2 = dx * dx + dy * dy;
+      if (!nearest || dist2 < nearest.dist2) {
+        nearest = { name: item.node.name, dist2 };
+      }
+    }
+
+    // Small node circles are hard to hit, so allow nearby hover within this radius.
+    const hitRadius = 14;
+    if (!nearest || nearest.dist2 > hitRadius * hitRadius) {
+      clearHoverTimer();
+      setHoveredNodeName(null);
+      setTooltipPos(null);
+      return;
+    }
+
+    setTooltipPos({ x: localX, y: localY });
+
+    if (hoveredNodeName === nearest.name) {
+      return;
+    }
+
+    clearHoverTimer();
+    hoverTimerRef.current = window.setTimeout(() => {
+      setHoveredNodeName(nearest.name);
+      hoverTimerRef.current = null;
+    }, 60);
+  };
+
+  const handleMapMouseLeave = () => {
+    clearHoverTimer();
+    setHoveredNodeName(null);
+    setTooltipPos(null);
+  };
 
   return (
     <div className="template-mini-map" aria-hidden="true">
-      <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
+      <svg
+        ref={svgRef}
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="none"
+        onMouseMove={handleMapMouseMove}
+        onMouseLeave={handleMapMouseLeave}
+      >
         <rect x="0" y="0" width={width} height={height} rx="8" ry="8" className="map-bg" />
         {template.edges.map((edge) => {
           const a = pointMap.get(edge.source);
@@ -129,18 +211,19 @@ function TemplateMiniMap({ template }: { template: TemplateDoc }) {
             />
           );
         })}
-        {template.nodes.map((node) => {
-          const p = pointMap.get(node.id);
-          if (!p) return null;
+        {miniNodes.map(({ node, p }) => {
           const roles = roleMap.get(node.id) ?? new Set<NodeRole>();
           const roleClass = `${roles.has("start") ? " start" : ""}${roles.has("end") ? " end" : ""}`;
           return (
-            <circle key={node.id} cx={p.x} cy={p.y} r={4.2} className={`map-node ${node.type}${roleClass}`}>
-              <title>{node.name}</title>
-            </circle>
+            <circle key={node.id} cx={p.x} cy={p.y} r={4.2} className={`map-node ${node.type}${roleClass}`} />
           );
         })}
       </svg>
+      {hoveredNodeName && tooltipPos && (
+        <div className="template-mini-tooltip" style={{ left: tooltipPos.x + 10, top: tooltipPos.y - 8 }}>
+          {hoveredNodeName}
+        </div>
+      )}
     </div>
   );
 }
