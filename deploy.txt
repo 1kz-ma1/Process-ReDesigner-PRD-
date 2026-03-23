@@ -1,8 +1,8 @@
-# ローカル
-cd frd
+# ローカル確認（prd/frontend）
+cd prd/frontend
 npm install
 npm run build
-npm run deploy
+npm run preview
 
 # CIトリガー
 # 1 必ずリポジトリ直下へ移動
@@ -15,16 +15,16 @@ git rev-parse --show-toplevel
 git status --short
 
 # 4 必要ファイルだけを明示的にステージ（git add . は使わない）
+#    ※ rdf -> prd のリネームを含むため、削除/追加をまとめてステージ
 git add deploy.txt
-git add rdf/frontend/package.json rdf/frontend/package-lock.json
-git add rdf/frontend/src
-git add rdf/frontend/tsconfig.json rdf/frontend/tsconfig.tsbuildinfo
+git add -A .github/workflows
+git add -A rdf prd
 
 # 5 ステージ内容を最終確認（ここが超重要）
 git diff --cached --name-only
 
 # 6 コミット
-git commit -m "feat(rdf): update frontend safely"
+git commit -m "chore(prd): unify frontend deploy flow"
 
 # 7 プッシュ
 git push origin HEAD

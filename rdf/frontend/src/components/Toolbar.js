@@ -1,9 +1,0 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-/**
- * Toolbar
- * ツールバー：モード切替、Undo/Redo、Validate、Auto Layout、Zoom etc
- */
-import { getLabel } from "../utils/i18n";
-export default function Toolbar({ mode, onSetMode, onValidate, onUndo, onRedo, canUndo, canRedo, onAutoLayout, onToggleProperties, }) {
-    return (_jsxs("header", { className: "toolbar", children: [_jsx("div", { className: "toolbar-group", children: _jsx("h1", { children: "\uD83D\uDD04 RDF \u30D7\u30ED\u30BB\u30B9\u30EA\u30C7\u30B6\u30A4\u30CA\u30FC" }) }), _jsxs("div", { className: "toolbar-group mode-selector", children: [_jsxs("label", { children: [getLabel("mode_roadmap"), ":", _jsx("input", { type: "radio", name: "mode", value: "roadmap", checked: mode === "roadmap", onChange: () => onSetMode("roadmap") })] }), _jsxs("label", { children: [getLabel("mode_free"), ":", _jsx("input", { type: "radio", name: "mode", value: "free", checked: mode === "free", onChange: () => onSetMode("free") })] })] }), _jsxs("div", { className: "toolbar-group", children: [_jsx("button", { onClick: onValidate, title: getLabel("validate"), children: getLabel("validate") }), _jsxs("button", { onClick: onAutoLayout, title: "\u81EA\u52D5\u6574\u5217", children: ["\uD83D\uDCD0 ", getLabel("auto_layout")] })] }), _jsxs("div", { className: "toolbar-group", children: [_jsxs("button", { onClick: onUndo, disabled: !canUndo, title: getLabel("undo"), children: ["\u21B6 ", getLabel("undo")] }), _jsxs("button", { onClick: onRedo, disabled: !canRedo, title: getLabel("redo"), children: ["\u21B7 ", getLabel("redo")] })] }), _jsx("div", { className: "toolbar-group", children: _jsxs("button", { onClick: onToggleProperties, title: getLabel("toggle_properties"), children: ["\u2699\uFE0F ", getLabel("toggle_properties")] }) })] }));
-}

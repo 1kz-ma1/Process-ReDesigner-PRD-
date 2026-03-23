@@ -1,0 +1,238 @@
+/**
+ * canvas.css
+ * CanvasRoot（SVG キャンバス）のスタイル
+ */
+
+.canvas-root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: max(100%, var(--canvas-min-width, 100%));
+  height: max(100%, var(--canvas-min-height, 100%));
+  min-height: 100%;
+  background-color: var(--color-bg-canvas);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.canvas-svg {
+  flex: 1 1 auto;
+  min-height: var(--canvas-min-height, 360px);
+  width: 100%;
+  height: auto;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='6' fill='none' stroke='white' stroke-width='4'/%3E%3Ccircle cx='12' cy='12' r='6' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='M12 4v4M12 16v4M4 12h4M16 12h4' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") 12 12, grab;
+  background-color: var(--color-bg-canvas);
+}
+
+.canvas-svg:active {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='6' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='12' cy='12' r='2' fill='black'/%3E%3C/svg%3E") 12 12, grabbing;
+}
+
+/* グリッド背景 */
+.canvas-svg rect[fill*="gridPattern"] {
+  background-color: var(--color-bg-primary);
+}
+
+/* 小メニュー */
+.mini-menu {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--gap-xs);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 140px;
+}
+
+.mini-menu-item {
+  padding: var(--gap-sm) var(--gap-md);
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.mini-menu-item:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.mini-menu-item.danger {
+  color: var(--color-danger);
+}
+
+.mini-menu-item.danger:hover {
+  background-color: var(--color-danger-light);
+  border-color: var(--color-danger);
+}
+
+/* 接続モード中のハイライト */
+.node-view.connect-source circle,
+.node-view.connect-source polygon {
+  filter: drop-shadow(0 0 8px var(--color-primary));
+}
+
+.roadmap-panel {
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.roadmap-panel-toggle {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  background: transparent;
+  cursor: pointer;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.roadmap-grid {
+  max-height: 280px;
+  overflow: auto;
+  display: grid;
+  grid-auto-rows: minmax(56px, auto);
+  gap: 6px;
+  padding: var(--gap-sm);
+}
+
+.roadmap-corner,
+.roadmap-col-head,
+.roadmap-row-head,
+.roadmap-cell-add {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.roadmap-corner,
+.roadmap-col-head,
+.roadmap-row-head {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+
+.roadmap-cell-add {
+  text-align: left;
+  padding: 8px;
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+}
+
+.roadmap-cell-add:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.roadmap-drop-highlight {
+  fill: rgba(37, 99, 235, 0.12);
+  stroke: #2563eb;
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.improve-overlay-hit {
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.35));
+  cursor: pointer;
+}
+
+.edge-suggestion-panel {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 20;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  padding: 10px;
+  min-width: 220px;
+  box-shadow: var(--shadow);
+}
+
+.edge-suggestion-panel ul {
+  margin: 8px 0;
+  padding-left: 18px;
+}
+
+.edge-suggestion-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edge-suggestion-actions button {
+  border: 1px solid var(--color-border);
+  background: #ffffff;
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.edge-suggestion-actions .ghost {
+  background: transparent;
+}
+
+.smart-add-popover {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 20;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  padding: 10px;
+  min-width: 240px;
+  box-shadow: var(--shadow);
+}
+
+.smart-add-popover header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.smart-add-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.smart-add-list button {
+  border: 1px solid var(--color-border);
+  background: #ffffff;
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.smart-add-popover footer {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.smart-add-popover .ghost {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  cursor: pointer;
+}
