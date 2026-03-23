@@ -553,6 +553,71 @@
   color: var(--color-text-secondary);
 }
 
+.template-mini-map {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.template-mini-map svg {
+  display: block;
+  width: 100%;
+  height: 92px;
+}
+
+.template-mini-map .map-bg {
+  fill: #f8fafc;
+}
+
+.template-mini-map .map-edge {
+  stroke-width: 1.8;
+  fill: none;
+  opacity: 0.9;
+}
+
+.template-mini-map .map-edge.normal {
+  stroke: #64748b;
+}
+
+.template-mini-map .map-edge.condition {
+  stroke: #2563eb;
+  stroke-dasharray: 3 2;
+}
+
+.template-mini-map .map-edge.loop {
+  stroke: #d97706;
+  stroke-dasharray: 2 2;
+}
+
+.template-mini-map .map-node {
+  stroke: #ffffff;
+  stroke-width: 1.2;
+}
+
+.template-mini-map .map-node.task {
+  fill: #0ea5e9;
+}
+
+.template-mini-map .map-node.condition {
+  fill: #f97316;
+}
+
+.template-mini-map .map-node.start {
+  stroke: #16a34a;
+  stroke-width: 2.2;
+}
+
+.template-mini-map .map-node.end {
+  stroke: #dc2626;
+  stroke-width: 2.2;
+}
+
+.template-mini-map .map-node.start.end {
+  stroke: #7c3aed;
+}
+
 .template-preview {
   padding: var(--gap-md);
   overflow: auto;
