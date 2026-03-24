@@ -98,6 +98,131 @@
   font-weight: 600;
 }
 
+.system-lane-panel {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.system-lane-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.system-lane-panel-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.system-lane-panel-actions button {
+  border: 1px solid var(--color-border);
+  background: #ffffff;
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.system-lane-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.system-lane-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  padding: 8px;
+  display: grid;
+  gap: 6px;
+}
+
+.system-lane-item label {
+  display: grid;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.system-lane-item input,
+.system-lane-item select {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+}
+
+.system-lane-item button {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.system-lane-item button.danger {
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
+.lane-connection-list {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  padding: 8px;
+}
+
+.lane-connection-list h4 {
+  margin: 0 0 6px;
+  font-size: var(--font-size-sm);
+}
+
+.lane-connection-list .muted {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.lane-connection-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.lane-connection-list li {
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--font-size-xs);
+}
+
+.lane-connection-row-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.lane-connection-row-actions button {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+}
+
+.lane-connection-row-actions .danger {
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
 .roadmap-grid {
   max-height: 280px;
   overflow: auto;
@@ -235,4 +360,68 @@
   border-radius: var(--radius-sm);
   padding: 4px 8px;
   cursor: pointer;
+}
+
+.lane-connection-modal-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.32);
+  z-index: 30;
+}
+
+.lane-connection-modal {
+  width: min(420px, calc(100% - 24px));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 10px;
+}
+
+.lane-connection-modal h3 {
+  margin: 0;
+}
+
+.lane-connection-modal p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.lane-connection-modal label {
+  display: grid;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.lane-connection-modal select,
+.lane-connection-modal textarea {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  font-size: var(--font-size-sm);
+}
+
+.lane-connection-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.lane-connection-modal-actions button {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.lane-connection-modal-actions .ghost {
+  background: transparent;
 }

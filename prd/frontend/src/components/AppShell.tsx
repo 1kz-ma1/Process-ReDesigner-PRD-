@@ -29,6 +29,8 @@ import type {
   ValidationBadgeSettings,
   ValidationCounts,
   ValidationMessage,
+  LaneConnectionType,
+  SystemType,
 } from "../models/types";
 import { templates } from "../templates";
 import { mergeWithTemplate, replaceWithTemplate } from "../utils/templateApply";
@@ -41,6 +43,7 @@ import TemplateModal from "./TemplateModal";
 import AnalysisPanel from "./AnalysisPanel";
 import PaneSplitter from "./PaneSplitter";
 import ValidationFloatingBadge from "./ValidationFloatingBadge";
+import { exportKintoneAppJson } from "../utils/kintoneExport";
 import "../styles/app.css";
 
 const DEFAULT_VALIDATION_BADGE_SETTINGS: ValidationBadgeSettings = {
@@ -50,7 +53,7 @@ const DEFAULT_VALIDATION_BADGE_SETTINGS: ValidationBadgeSettings = {
   },
 };
 
-const PATCH_HISTORY_KEY = "rdf.ui.patchHistory.v1";
+const PATCH_HISTORY_KEY = "prd.ui.patchHistory.v1";
 
 export default function AppShell() {
   // デザイントークン inject
@@ -423,7 +426,115 @@ export default function AppShell() {
     const worldX = -vp.x + centerX / safeZoom;
     const worldY = -vp.y + centerY / safeZoom;
     const id = store.addNode("task", "新規タスク", worldX, worldY, {});
+    const fallbackLaneId = store.current.systemLanes?.[0]?.laneId;
+    if (fallbackLaneId) {
+      store.updateNode(id, { laneId: fallbackLaneId, lane: { row: 0, col: 0 } });
+    }
     setSelectedNodeId(id);
+  };
+
+  const addSystemLane = () => {
+    const laneCount = store.current.systemLanes?.length ?? 0;
+    const nextLane = {
+      laneId: `lane-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+      name: `システム${laneCount + 1}`,
+      systemType: "custom" as SystemType,
+    };
+    store.setDocument({
+      ...store.current,
+      systemLanes: [...(store.current.systemLanes ?? []), nextLane],
+    });
+  };
+
+  const updateSystemLane = (laneId: string, patch: { name?: string; systemType?: SystemType }) => {
+    store.setDocument({
+      ...store.current,
+      systemLanes: (store.current.systemLanes ?? []).map((lane) =>
+        lane.laneId === laneId ? { ...lane, ...patch } : lane
+      ),
+    });
+  };
+
+  const deleteSystemLane = (laneId: string) => {
+    const lanes = store.current.systemLanes ?? [];
+    if (lanes.length <= 1) {
+      setNotice("最低1つのシステムレーンは必要です");
+      return;
+    }
+    const fallback = lanes.find((lane) => lane.laneId !== laneId)?.laneId;
+    if (!fallback) {
+      return;
+    }
+
+    const reassignedNodes = store.current.nodes.map((node) =>
+      node.laneId === laneId ? { ...node, laneId: fallback } : node
+    );
+
+    const nextConnections = (store.current.laneConnections ?? []).filter(
+      (connection) => connection.from.laneId !== laneId && connection.to.laneId !== laneId
+    );
+
+    store.setDocument({
+      ...store.current,
+      nodes: reassignedNodes,
+      systemLanes: lanes.filter((lane) => lane.laneId !== laneId),
+      laneConnections: nextConnections,
+    });
+  };
+
+  const addLaneConnection = (input: {
+    fromLaneId: string;
+    fromBlockId: string;
+    toLaneId: string;
+    toBlockId: string;
+    type: LaneConnectionType;
+    payload?: string;
+  }) => {
+    const nextConnection = {
+      connectionId: `conn-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+      from: { laneId: input.fromLaneId, blockId: input.fromBlockId },
+      to: { laneId: input.toLaneId, blockId: input.toBlockId },
+      type: input.type,
+      payload: input.payload,
+    };
+
+    store.setDocument({
+      ...store.current,
+      laneConnections: [...(store.current.laneConnections ?? []), nextConnection],
+    });
+  };
+
+  const updateLaneConnection = (connectionId: string, patch: { type: LaneConnectionType; payload?: string }) => {
+    store.setDocument({
+      ...store.current,
+      laneConnections: (store.current.laneConnections ?? []).map((connection) =>
+        connection.connectionId === connectionId
+          ? { ...connection, ...patch }
+          : connection
+      ),
+    });
+  };
+
+  const deleteLaneConnection = (connectionId: string) => {
+    store.setDocument({
+      ...store.current,
+      laneConnections: (store.current.laneConnections ?? []).filter(
+        (connection) => connection.connectionId !== connectionId
+      ),
+    });
+  };
+
+  const handleExportKintone = () => {
+    const payload = exportKintoneAppJson(store.current, "PRD Generated App");
+    const json = JSON.stringify(payload, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "prd-kintone-app.json";
+    anchor.click();
+    URL.revokeObjectURL(url);
+    setNotice("kintone用JSONを出力しました");
   };
 
   const applyReplace = (templateKey: string) => {
@@ -500,6 +611,7 @@ export default function AppShell() {
         }}
         onToggleProperties={() => setRightPaneOpen((v: boolean) => !v)}
         rightPaneOpen={rightPaneOpen && !isSmallScreen}
+        onExportKintone={handleExportKintone}
       />
 
       <ValidationFloatingBadge
@@ -616,6 +728,13 @@ export default function AppShell() {
               validationMessages={validation.messages}
               improveHighlight={uiFlags.improveHighlight}
               smartAddAutoConnect={uiFlags.smartAddAutoConnect}
+              onAddSystemLane={addSystemLane}
+              onUpdateSystemLane={updateSystemLane}
+              onDeleteSystemLane={deleteSystemLane}
+              onAddLaneConnection={addLaneConnection}
+              onUpdateLaneConnection={updateLaneConnection}
+              onDeleteLaneConnection={deleteLaneConnection}
+              onExportKintone={handleExportKintone}
               onJumpToValidation={(msg) => {
                 setValidationOpen(true);
                 if (msg.nodeId) {

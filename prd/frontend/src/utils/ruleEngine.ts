@@ -16,8 +16,8 @@ import type {
 } from "../models/types";
 import { generateEdgeId, generateNodeId } from "./id";
 
-const SETTINGS_KEY = "rdf.rule.settings.v1";
-const HISTORY_KEY = "rdf.rule.history.v1";
+const SETTINGS_KEY = "prd.rule.settings.v1";
+const HISTORY_KEY = "prd.rule.history.v1";
 
 const severityWeight: Record<RuleSeverity, number> = {
   error: 0,
@@ -46,6 +46,14 @@ function nodeCategory(node: NodeData): string {
   if (name.includes("承認") || name.includes("approve")) return "承認";
   if (name.includes("通知") || name.includes("notify")) return "通知";
   return "";
+}
+
+function laneNameById(doc: FlowDoc, laneId?: string): string {
+  if (!laneId) {
+    return "未割当レーン";
+  }
+  const lane = (doc.systemLanes ?? []).find((item) => item.laneId === laneId);
+  return lane?.name ?? laneId;
 }
 
 function buildContext(doc: FlowDoc): RuleContext {
@@ -183,6 +191,92 @@ function laneMoveFix(nodeId: NodeId, row: number, col: number, label: string, pr
 
 function makeRules(): Rule[] {
   const rules: Rule[] = [];
+
+  rules.push({
+    id: "lane.node-assigned",
+    name: "レーン割当チェック",
+    description: "ロードマップモードでは全ノードにsystem laneを割り当てる",
+    severityDefault: "error",
+    appliesToModes: ["roadmap"],
+    check: ({ doc }) => {
+      if ((doc.systemLanes?.length ?? 0) === 0) {
+        return [];
+      }
+      return doc.nodes
+        .filter((node) => !node.laneId)
+        .map((node) => ({
+          ruleId: "lane.node-assigned",
+          severity: "error" as const,
+          message: `ノード「${node.name}」がシステムレーン未割当です`,
+          targets: { nodes: [node.id] },
+        }));
+    },
+  });
+
+  rules.push({
+    id: "integration.cross-lane-metadata",
+    name: "レーン間連携メタ情報",
+    description: "レーン間エッジには連携定義を紐付ける",
+    severityDefault: "warning",
+    appliesToModes: ["roadmap"],
+    check: ({ doc }) => {
+      const connSet = new Set(
+        (doc.laneConnections ?? []).map(
+          (connection) => `${connection.from.blockId}->${connection.to.blockId}`
+        )
+      );
+
+      const nodeMap = new Map(doc.nodes.map((node) => [node.id, node]));
+      const results: RuleResult[] = [];
+      for (const edge of doc.edges) {
+        const source = nodeMap.get(edge.source);
+        const target = nodeMap.get(edge.target);
+        if (!source || !target) continue;
+        if (!source.laneId || !target.laneId || source.laneId === target.laneId) continue;
+        if (connSet.has(`${edge.source}->${edge.target}`)) continue;
+
+        results.push({
+          ruleId: "integration.cross-lane-metadata",
+          severity: "warning",
+          message: `連携定義不足: ${laneNameById(doc, source.laneId)} → ${laneNameById(doc, target.laneId)}`,
+          targets: { edges: [edge.id], nodes: [source.id, target.id] },
+        });
+      }
+      return results;
+    },
+  });
+
+  rules.push({
+    id: "integration.connection-endpoint",
+    name: "連携接続先整合",
+    description: "連携定義は存在するノード/レーンを参照する",
+    severityDefault: "error",
+    appliesToModes: ["roadmap"],
+    check: ({ doc }) => {
+      const nodeSet = new Set(doc.nodes.map((node) => node.id));
+      const laneSet = new Set((doc.systemLanes ?? []).map((lane) => lane.laneId));
+
+      const results: RuleResult[] = [];
+      for (const connection of doc.laneConnections ?? []) {
+        const hasFromNode = nodeSet.has(connection.from.blockId);
+        const hasToNode = nodeSet.has(connection.to.blockId);
+        const hasFromLane = laneSet.has(connection.from.laneId);
+        const hasToLane = laneSet.has(connection.to.laneId);
+        if (hasFromNode && hasToNode && hasFromLane && hasToLane) {
+          continue;
+        }
+        results.push({
+          ruleId: "integration.connection-endpoint",
+          severity: "error",
+          message: `連携「${connection.connectionId}」の参照先が存在しません`,
+          targets: {
+            nodes: [connection.from.blockId, connection.to.blockId],
+          },
+        });
+      }
+      return results;
+    },
+  });
 
   rules.push({
     id: "order.input-validate",
@@ -621,9 +715,9 @@ export function getRulePacks(): RulePack[] {
       id: "core",
       name: "Core Pack",
       version: "1.0.0",
-      rules: rules.filter((r) => r.id.startsWith("structure") || r.id.startsWith("flow") || r.id.startsWith("condition") || r.id.startsWith("loop")),
+      rules: rules.filter((r) => r.id.startsWith("structure") || r.id.startsWith("flow") || r.id.startsWith("condition") || r.id.startsWith("loop") || r.id.startsWith("lane") || r.id.startsWith("integration")),
       defaultEnabled: rules
-        .filter((r) => r.id.startsWith("structure") || r.id.startsWith("flow") || r.id.startsWith("condition") || r.id.startsWith("loop"))
+        .filter((r) => r.id.startsWith("structure") || r.id.startsWith("flow") || r.id.startsWith("condition") || r.id.startsWith("loop") || r.id.startsWith("lane") || r.id.startsWith("integration"))
         .map((r) => r.id),
     },
     {

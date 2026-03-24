@@ -22,6 +22,7 @@ function countInCell(nodes: NodeData[], row: number, col: number): number {
 }
 
 export function replaceWithTemplate(template: TemplateDoc): FlowDoc {
+  const defaultLaneId = "lane-default";
   const nodes = template.nodes.map((n) => {
     const row = n.lane?.row ?? 0;
     const col = n.lane?.col ?? 0;
@@ -29,6 +30,7 @@ export function replaceWithTemplate(template: TemplateDoc): FlowDoc {
     return {
       ...structuredClone(n),
       id: generateNodeId(),
+      laneId: defaultLaneId,
       lane: { row, col },
       indexInCell: idx,
       meta: structuredClone(n.meta ?? {}),
@@ -50,6 +52,10 @@ export function replaceWithTemplate(template: TemplateDoc): FlowDoc {
     mode: "roadmap",
     nodes,
     edges,
+    systemLanes: [
+      { laneId: defaultLaneId, name: "メインシステム", systemType: "custom" },
+    ],
+    laneConnections: [],
     lanes: structuredClone(template.lanes),
     laneConfig: structuredClone(template.lanes),
     viewport: { x: 0, y: 0, zoom: 1 },
@@ -82,6 +88,7 @@ export function mergeWithTemplate(current: FlowDoc, template: TemplateDoc): Flow
   template.lanes.cols.forEach((c, i) => colMap.set(i, nextCols.indexOf(norm(c))));
 
   const nodes = structuredClone(current.nodes);
+  const fallbackLaneId = current.systemLanes?.[0]?.laneId ?? "lane-default";
   const idMap = new Map<string, string>();
 
   for (const node of template.nodes) {
@@ -93,6 +100,7 @@ export function mergeWithTemplate(current: FlowDoc, template: TemplateDoc): Flow
     nodes.push({
       ...structuredClone(node),
       id: newId,
+      laneId: node.laneId ?? fallbackLaneId,
       lane: { row: mappedRow, col: mappedCol },
       indexInCell: idx,
       meta: structuredClone(node.meta ?? {}),
@@ -123,6 +131,8 @@ export function mergeWithTemplate(current: FlowDoc, template: TemplateDoc): Flow
     mode: "roadmap",
     nodes,
     edges,
+    systemLanes: current.systemLanes ?? [{ laneId: fallbackLaneId, name: "メインシステム", systemType: "custom" }],
+    laneConnections: current.laneConnections ?? [],
     lanes: { rows: nextRows, cols: nextCols },
     laneConfig: { rows: nextRows, cols: nextCols },
     viewport: current.viewport ?? { x: 0, y: 0, zoom: 1 },

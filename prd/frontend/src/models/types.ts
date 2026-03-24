@@ -22,6 +22,26 @@ export interface LanePosition {
   col: number;
 }
 
+export type SystemType = "kintone" | "external" | "excel" | "custom";
+
+export type LaneConnectionType = "api" | "webhook" | "manual" | "file";
+
+export interface SystemLane {
+  laneId: string;
+  name: string;
+  systemType: SystemType;
+  blocks?: NodeId[];
+  connections?: string[];
+}
+
+export interface LaneConnection {
+  connectionId: string;
+  from: { laneId: string; blockId: NodeId };
+  to: { laneId: string; blockId: NodeId };
+  type: LaneConnectionType;
+  payload?: string;
+}
+
 /** ノードデータ（新仕様：両モード共有） */
 export interface NodeData {
   id: NodeId;
@@ -38,6 +58,7 @@ export interface NodeData {
   // レイアウト（両方保持して往復可能）
   position?: Position; // 自由配置用
   lane?: LanePosition; // ロードマップ用（セル位置）
+  laneId?: string; // 複数システムレーン用
   indexInCell?: number;
 }
 
@@ -67,6 +88,8 @@ export interface LaneConfig {
 export interface FlowDoc {
   nodes: NodeData[];
   edges: EdgeData[];
+  systemLanes?: SystemLane[];
+  laneConnections?: LaneConnection[];
   viewport?: Viewport;
   mode: "roadmap" | "free"; // モード切替
   lanes?: LaneConfig; // ロードマップ用設定（新）

@@ -11,6 +11,54 @@ import { designTokens } from "./designTokens";
  * 列は DAG フロー順、行は衝突回避
  */
 export function autoLayoutRoadmap(doc: FlowDoc): FlowDoc {
+  if ((doc.systemLanes?.length ?? 0) > 0) {
+    const lanes = doc.systemLanes ?? [];
+    const laneIndexById = new Map(lanes.map((lane, index) => [lane.laneId, index]));
+    const grouped = new Map<string, NodeData[]>();
+
+    for (const lane of lanes) {
+      grouped.set(lane.laneId, []);
+    }
+
+    const fallbackLaneId = lanes[0]?.laneId;
+    for (const node of doc.nodes) {
+      const laneId = node.laneId && grouped.has(node.laneId) ? node.laneId : fallbackLaneId;
+      if (!laneId) continue;
+      const arr = grouped.get(laneId) ?? [];
+      arr.push(node);
+      grouped.set(laneId, arr);
+    }
+
+    const next = structuredClone(doc);
+    const laneWidth = 300;
+    const laneGap = 40;
+    const startX = 120;
+    const startY = 90;
+    const stepY = 128;
+
+    for (const [laneId, nodes] of grouped.entries()) {
+      const laneIndex = laneIndexById.get(laneId) ?? 0;
+      nodes.sort((a, b) => {
+        const ay = a.position?.y ?? 0;
+        const by = b.position?.y ?? 0;
+        return ay - by;
+      });
+
+      nodes.forEach((node, idx) => {
+        const target = next.nodes.find((n) => n.id === node.id);
+        if (!target) return;
+        const x = startX + laneIndex * (laneWidth + laneGap) + laneWidth / 2;
+        const y = startY + idx * stepY;
+        target.laneId = laneId;
+        target.lane = { row: idx, col: laneIndex };
+        target.indexInCell = idx;
+        target.position = { x, y };
+      });
+    }
+
+    return next;
+  }
+
   const laneConfig = doc.lanes ?? doc.laneConfig;
   if (!laneConfig) return doc;
 

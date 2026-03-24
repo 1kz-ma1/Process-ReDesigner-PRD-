@@ -44,6 +44,26 @@ function cloneFlowDoc(doc: FlowDoc): FlowDoc {
           cols: [...lanes.cols],
         }
       : undefined,
+    systemLanes: (doc.systemLanes ?? []).map((lane) => ({
+      laneId: String(lane.laneId),
+      name: String(lane.name),
+      systemType: lane.systemType,
+      blocks: [...(lane.blocks ?? [])],
+      connections: [...(lane.connections ?? [])],
+    })),
+    laneConnections: (doc.laneConnections ?? []).map((connection) => ({
+      connectionId: String(connection.connectionId),
+      from: {
+        laneId: String(connection.from.laneId),
+        blockId: String(connection.from.blockId),
+      },
+      to: {
+        laneId: String(connection.to.laneId),
+        blockId: String(connection.to.blockId),
+      },
+      type: connection.type,
+      payload: connection.payload,
+    })),
     nodes: doc.nodes.map((node) => ({
       id: String(node.id),
       type: node.type,
@@ -61,6 +81,7 @@ function cloneFlowDoc(doc: FlowDoc): FlowDoc {
           }
         : undefined,
       lane: node.lane ? { row: node.lane.row, col: node.lane.col } : undefined,
+      laneId: node.laneId,
       indexInCell: node.indexInCell,
       position: node.position
         ? {
@@ -119,6 +140,10 @@ const DEFAULT_FLOW: FlowDoc = {
     rows: ["役割A", "役割B", "役割C"],
     cols: ["計画", "実行", "検証", "完了"],
   },
+  systemLanes: [
+    { laneId: "lane-main", name: "メインシステム", systemType: "custom" },
+  ],
+  laneConnections: [],
 };
 
 const DEFAULT_VALIDATION: ValidationResult = {

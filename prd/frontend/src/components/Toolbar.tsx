@@ -21,6 +21,7 @@ interface ToolbarProps {
   improveHighlight: boolean;
   onToggleImproveHighlight: () => void;
   rightPaneOpen: boolean;
+  onExportKintone: () => void;
 }
 
 export default function Toolbar({
@@ -39,11 +40,12 @@ export default function Toolbar({
   improveHighlight,
   onToggleImproveHighlight,
   rightPaneOpen,
+  onExportKintone,
 }: ToolbarProps) {
   return (
     <header className="toolbar">
       <div className="toolbar-group">
-        <h1>🔄 RDF プロセスリデザイナー</h1>
+        <h1>🔄 PRD-プロセスリデザイナー</h1>
       </div>
 
       <div className="toolbar-group mode-selector">
@@ -75,6 +77,9 @@ export default function Toolbar({
         </button>
         <button onClick={onOpenTemplates} title={getLabel("open_template_modal")}>
           🧩 {getLabel("open_template_modal")}
+        </button>
+        <button onClick={onExportKintone} title="kintoneレーンをJSON出力">
+          ⬇ kintone JSON
         </button>
         <button className="btn-with-badge" onClick={onValidate} title={getLabel("validate")}>
           {getLabel("validate")}
