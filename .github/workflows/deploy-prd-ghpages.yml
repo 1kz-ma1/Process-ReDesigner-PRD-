@@ -1,4 +1,4 @@
-name: Deploy FRD to GitHub Pages
+name: Deploy PRD Frontend to GitHub Pages
 
 on:
   push:
@@ -26,10 +26,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: frd/package-lock.json
+          cache-dependency-path: prd/frontend/package-lock.json
 
-      - name: Install & build FRD
-        working-directory: frd
+      - name: Install & build PRD Frontend
+        working-directory: prd/frontend
         run: |
           npm ci
           npm run build
@@ -38,7 +38,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frd/dist
+          publish_dir: ./prd/frontend/dist
           publish_branch: gh-pages
           user_name: github-actions
           user_email: github-actions@github.com
