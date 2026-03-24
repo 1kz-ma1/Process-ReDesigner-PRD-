@@ -1,0 +1,63 @@
+/**
+ * edge.css
+ * EdgeView（SVGエッジ）のスタイル
+ */
+
+.edge-view {
+  cursor: pointer;
+}
+
+.edge-view .edge-line {
+  stroke: var(--color-edge-normal);
+  stroke-width: var(--edge-stroke-width);
+  fill: none;
+  transition: all 0.2s ease;
+}
+
+.edge-view.selected .edge-line {
+  stroke: var(--color-edge-selected);
+  stroke-width: calc(var(--edge-stroke-width) * 1.5);
+  filter: drop-shadow(0 0 4px var(--color-primary-light));
+}
+
+.edge-view:hover .edge-line {
+  filter: drop-shadow(0 0 2px var(--color-primary));
+}
+
+/* エッジの種類別 */
+.edge-view[data-edge-kind="normal"] .edge-line {
+  stroke: var(--color-edge-normal);
+  stroke-dasharray: none;
+}
+
+.edge-view[data-edge-kind="condition"] .edge-line {
+  stroke: var(--color-edge-condition);
+  stroke-dasharray: none;
+}
+
+.edge-view[data-edge-kind="loop"] .edge-line {
+  stroke: var(--color-edge-loop);
+  stroke-dasharray: 5, 5;
+}
+
+/* 矢印マーカー */
+.edge-view marker path {
+  fill: var(--color-edge-normal);
+}
+
+.edge-view[data-edge-kind="condition"] marker path {
+  fill: var(--color-edge-condition);
+}
+
+.edge-view[data-edge-kind="loop"] marker path {
+  fill: var(--color-edge-loop);
+}
+
+/* エッジラベル */
+.edge-view text {
+  font-size: var(--font-size-xs);
+  fill: var(--color-text-secondary);
+  pointer-events: none;
+  user-select: none;
+  text-anchor: middle;
+}

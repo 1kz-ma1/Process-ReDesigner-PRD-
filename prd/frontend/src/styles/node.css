@@ -1,0 +1,52 @@
+/**
+ * node.css
+ * NodeView（SVGノード）のスタイル
+ */
+
+.node-view {
+  cursor: move;
+}
+
+.node-view rect,
+.node-view polygon {
+  fill: var(--color-node-bg);
+  stroke: var(--color-node-border);
+  stroke-width: var(--edge-stroke-width);
+  transition: all 0.2s ease;
+}
+
+.node-view.selected rect,
+.node-view.selected polygon {
+  fill: var(--color-node-selected-bg);
+  stroke: var(--color-node-selected-border);
+  stroke-width: calc(var(--edge-stroke-width) * 1.5);
+}
+
+.node-view.connect-source rect,
+.node-view.connect-source polygon {
+  fill: var(--color-node-connect-source-bg);
+  stroke: var(--color-node-connect-source-border);
+}
+
+.node-view.highlight rect,
+.node-view.highlight polygon {
+  fill: var(--color-node-highlight-bg);
+  stroke: var(--color-node-highlight-border);
+}
+
+.node-view text {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  fill: var(--color-text-primary);
+  pointer-events: none;
+  user-select: none;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.node-view:hover rect,
+.node-view:hover polygon {
+  filter: drop-shadow(0 0 4px var(--color-primary-light));
+}
+
+/* ノードの種類別 */

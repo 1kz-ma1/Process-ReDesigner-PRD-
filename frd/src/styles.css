@@ -1,11 +1,11 @@
 :root {
-  --bg: #f6f4ef;
-  --panel: #fffdf8;
-  --line: #ddd8cb;
-  --ink: #1f2937;
-  --muted: #5b6470;
-  --accent: #0f766e;
-  --danger: #b91c1c;
+  --bg: var(--ui-bg);
+  --panel: var(--ui-surface);
+  --line: var(--ui-border);
+  --ink: var(--ui-text);
+  --muted: var(--ui-muted);
+  --accent: var(--ui-primary);
+  --danger: var(--ui-critical);
   --radius: 12px;
   --space-sm: 8px;
   --space-md: 12px;
@@ -131,8 +131,10 @@ button,
   height: calc(100% - 30px);
   border: 1px solid var(--line);
   border-radius: calc(var(--radius) - 4px);
-  overflow: hidden;
+  overflow: visible !important;
+  position: relative;
 }
+
 
 .field {
   display: grid;
@@ -183,4 +185,72 @@ button,
   .canvas-wrap {
     height: 520px;
   }
+}
+
+/* Ensure React Flow nodes render above other canvas layers (edges, backgrounds, overlays) */
+.canvas-box .react-flow__nodes {
+  z-index: 1000 !important;
+}
+.canvas-box .react-flow__node {
+  z-index: 1001 !important;
+  pointer-events: auto;
+}
+.canvas-box .react-flow__edges {
+  z-index: 900 !important;
+}
+.canvas-box .rf-node {
+  z-index: 1002 !important;
+}
+
+/* If there's an overlay or viewport transform, keep it behind nodes */
+.canvas-box .react-flow__viewport,
+.canvas-box .react-flow__renderer,
+.canvas-box .react-flow__pane {
+  z-index: 0;
+}
+
+/* Improve touch responsiveness: tell the browser not to wait for touch handlers */
+.canvas-box .react-flow__viewport,
+.canvas-box .react-flow__renderer {
+  touch-action: none;
+  -ms-touch-action: none;
+}
+
+/* DEBUG HELPERS (disabled by default). To enable, add the `debug` class to `.canvas-box` */
+.canvas-box.debug .react-flow__node,
+.canvas-box.debug .rf-node {
+  outline: 2px solid rgba(255, 0, 0, 0.9) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #000 !important;
+  min-width: 80px !important;
+  min-height: 40px !important;
+  opacity: 1 !important;
+  transform: translateZ(0) !important;
+}
+
+.canvas-box.debug .react-flow__nodes {
+  pointer-events: auto !important;
+}
+
+/* TEMP DEBUG: force viewport transform off to reveal nodes if they're off-screen */
+.canvas-box.debug .react-flow__viewport {
+  transform: none !important;
+  left: 0 !important;
+  top: 0 !important;
+}
+
+/* Force nodes to use absolute positioning and be visible outside container for debugging */
+.canvas-box.debug .react-flow__node {
+  position: absolute !important;
+}
+
+/* Debug overlay markers */
+.debug-overlay .debug-marker {
+  background: rgba(255,0,0,0.9);
+  color: #fff;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+  transform-origin: center center;
 }

@@ -1,0 +1,66 @@
+@import "./styles/tokens.css";
+@import "./styles/app.css";
+@import "./styles/canvas.css";
+@import "./styles/toolbar.css";
+@import "./styles/node.css";
+@import "./styles/edge.css";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-y: auto;
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Reset default styles for form elements */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  padding: var(--gap-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+/* Utility classes */
+/* Utility classes */
+.muted {
+  color: var(--color-text-secondary);
+}
+
